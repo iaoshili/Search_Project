@@ -3,6 +3,7 @@
  */
 public class Main {
     public static void main(String[] args) {
-        System.out.println("hello");
+        PreprocessURLs processUrls = new PreprocessURLs("/Users/Greyjoy/Documents/Homework/Search_Project/Data");
+            processUrls.saveInfoInCategory("tech");
     }
 }
