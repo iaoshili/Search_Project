@@ -31,10 +31,10 @@ public class PreprocessURLs {
     }
 
     public void saveInfoInCategory(String category){
-        int pageNum = 153;
+        int pageNum = 134;
         while (true) {
             String pageUrl = "http://www.theverge.com/"+category+"/archives/"+Integer.toString(pageNum);
-            System.out.println("Fetching page: "+Integer.toString(pageNum));
+            System.out.println("Fetching page: "+Integer.toString(pageNum) + " "+pageUrl);
             ArrayList<String> urls = getUrlsOfThisPage(pageUrl);
             if (urls.size() <= 1) {
                 System.out.println("This category is exhausted.");

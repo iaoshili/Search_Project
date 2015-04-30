@@ -4,6 +4,6 @@
 public class Main {
     public static void main(String[] args) {
         PreprocessURLs processUrls = new PreprocessURLs("/Users/Greyjoy/Documents/Homework/Search_Project/Data");
-            processUrls.saveInfoInCategory("tech");
+            processUrls.saveInfoInCategory("us-world");
     }
 }
