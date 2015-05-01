@@ -26,17 +26,20 @@ class UploadHandler(web.RequestHandler):
         logging.info(_UPLOADS)
         fh = open(_UPLOADS + cname, 'w')
         fh.write(fileinfo['body'])
-        tags = SampleClassifier.classifyDocument(loadVergeText(fileinfo['body']))
+        textBody, oriTags = self.loadVergeText(fileinfo['body'])
+        tags = SampleClassifier.classifyDocument(textBody)
         response = {
             "status" : "OK",
             "file_name" : cname,
             "folder" : _UPLOADS,
-            "tags" : tags
+            "classify_tags" : tags,
+            "origianl_tags" : oriTags
         }
         self.finish(json.dumps(response))
 
     def loadVergeText(self, content):
-        return json.loads(content)['Main text']
+        cons = json.loads(content)
+        return cons['Main text'], cons['Tags'] 
 
 class IndexDotHTMLAwareStaticFileHandler(web.StaticFileHandler):
     def parse_url_path(self, url_path):
