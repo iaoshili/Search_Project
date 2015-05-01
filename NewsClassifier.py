@@ -12,6 +12,7 @@ import os
 import codecs
 import operator
 import string
+import pickle
 
 '''
 重要！请把workingDirectory修改成Data文件夹所在目录，以"/"结尾。
@@ -24,7 +25,7 @@ nltk使用参考：http://www.nltk.org/book/ch06.html
 TITLE_BONUS = 50
 NUM_FEATUREWORDS = 3000
 
-workingDirectory = "/Users/Greyjoy/Documents/Homework/Search_Project/Data/"
+workingDirectory = "/Users/Greyjoy/Documents/Homework/Search_Project/SmallData/"
 
 tagSet = set([u'tech',u'apple',u'google',u'microsoft',u'mobile',u'business',u'photography',u'home',u'apps',
 u'science',u'entertainment',u'culture',u'gaming',u'web',u'movie-reviews',u'transportation',
@@ -48,8 +49,8 @@ def getCleanStructuredData(data, tag):
 
 	chunk = " ".join([data["Title"][:-11]] * TITLE_BONUS) + " " + data["Main text"]
 	tokens = WordPunctTokenizer().tokenize(chunk)
-	# stemmer = nltk.PorterStemmer()
-	# tokens = [stemmer.stem(t).lower() for t in tokens]
+	stemmer = nltk.PorterStemmer()
+	tokens = [stemmer.stem(t).lower() for t in tokens]
 	tokens = [x for x in tokens if ((x in stopwordList) == False)]
 
 	#Deal with tag
@@ -93,6 +94,7 @@ def train(cleanedDataCollection, word_features):
 	classifier.show_most_informative_features(5) 
 	return classifier
 
+
 cleanedDataCollection = []
 for fileName in os.listdir(workingDirectory):
 	if "The Verge" not in fileName:
@@ -102,11 +104,17 @@ for fileName in os.listdir(workingDirectory):
 		input_file  = file(filePath, "r")
 		data = json.loads(input_file.read())
 
-		cleanedData = getCleanStructuredData(data, "google")
+		cleanedData = getCleanStructuredData(data, "tech")
 		cleanedDataCollection.append(cleanedData)
 
 word_features = extractWordFeatureSet(cleanedDataCollection)
 classifier = train(cleanedDataCollection,word_features)
 
+f = open('/Users/Greyjoy/Downloads/word_features.pickle', 'wb')
+pickle.dump(word_features, f, -1)
+f.close()
 
+f = open('/Users/Greyjoy/Downloads/my_classifier.pickle', 'wb')
+pickle.dump(classifier, f, -1)
+f.close()
 
