@@ -17,6 +17,14 @@
     <script src="js/app.js"></script>
 </head>
 <body ng-controller="mainController">
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <ul class="nav nav-pills">
+        <li role="presentation" class="active"><a href="#">Home</a></li>
+        <!--<li role="presentation"><a href="#">Tags</a></li>-->
+</ul>
+      </div>
+</nav>
 <div class="container-fluid" ng-if="!activeQuery">
         <div id="titleDiv" class="row text-center">
             <h1>Tag Search</h1>
@@ -34,7 +42,7 @@
     <div id="navDiv" class="row" style="padding-left: 3px; border-bottom: 0px black solid;">
         <div class="col-lg-3 col-md-3" style="width: auto;">
             <h1 style="margin-top: -6px; margin-bottom: 10px;">
-                MetaSearch
+                Tag Search
             </h1>
         </div>
 

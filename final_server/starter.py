@@ -5,13 +5,13 @@ import inventory
 import logging
 import os, uuid
 import json
+import SampleClassifier
 
 _UPLOADS = "uploads/"
 SETTINGS = {"static_path": "./webapp"}
 
 class UploadHandler(web.RequestHandler):
 
-    global __UPLOADS
     def post(self):
         #logging.info(self.request.files)
         fileinfo = self.request.files['file'][0]
@@ -26,10 +26,12 @@ class UploadHandler(web.RequestHandler):
         logging.info(_UPLOADS)
         fh = open(_UPLOADS + cname, 'w')
         fh.write(fileinfo['body'])
+        tags = SampleClassifier.classifyDocument(fileinfo['body'])
         response = {
             "status" : "OK",
             "file_name" : cname,
-            "folder" : _UPLOADS
+            "folder" : _UPLOADS,
+            "tags" : tags
         }
         self.finish(json.dumps(response))
 

@@ -52,8 +52,8 @@ myApp.controller('uploadCtrl', ['$scope', 'fileUpload', function($scope, fileUpl
 }])
 .controller('mainController', ['$scope', function($scope){
     
-    $scope.errorText = " ";
-    $scope.totalItems = " ";
-    $scope.delay = " ";
+    $scope.errorText = "";
+    $scope.totalItems = "";
+    $scope.delay = "";
     $scope.results = {};
 }]);
