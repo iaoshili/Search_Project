@@ -13,6 +13,18 @@ import codecs
 import operator
 import string
 import pickle
+# from featx import label_feats_from_corpus, split_label_feats
+# from featx import bag_of_words
+from nltk.classify.scikitlearn import SklearnClassifier
+from sklearn.naive_bayes import MultinomialNB
+from nltk.classify.util import accuracy
+from classification import precision_recall_fmeasure
+from sklearn import svm
+from sklearn.svm import NuSVC
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.pipeline import Pipeline
+from featx import high_information_words
 
 '''
 重要！请把workingDirectory修改成Data文件夹所在目录，以"/"结尾。
@@ -25,7 +37,7 @@ nltk使用参考：http://www.nltk.org/book/ch06.html
 TITLE_BONUS = 50
 NUM_FEATUREWORDS = 3000
 
-workingDirectory = "/Users/Greyjoy/Documents/Homework/Search_Project/SmallData/"
+workingDirectory = "/Users/Greyjoy/Documents/Homework/Search_Project/Data/"
 
 tagSet = set([u'tech',u'apple',u'google',u'microsoft',u'mobile',u'business',u'photography',u'home',u'apps',
 u'science',u'entertainment',u'culture',u'gaming',u'web',u'movie-reviews',u'transportation',
@@ -57,7 +69,7 @@ def getCleanStructuredData(data, tag):
 	if tag in data["Tags"]:
 		label = tag
 	else:
-		label = "Not_"+tag
+		label = "NotThis"
 
 	cleanedData = []
 	cleanedData.append(tokens)
@@ -78,24 +90,49 @@ def extractWordFeatureSet(cleanedDataCollection):
 		word_features.append(sorted_freqWords[i][0])
 	return word_features
 
-def extractFeatureOfADocument(document, word_features):
+def extractBinaryWordFeatureOfADocument(document, word_features):
     document_words = set(document) 
     features = {}
     for word in word_features:
         features['contains(%s)' % word] = (word in document_words)
     return features
 
-def train(cleanedDataCollection, word_features):
+def extractTfIdfFeatureOfADocument(document, idfDict, high_info_wordSet):
+	features = {}
+	for word in high_info_wordSet:
+		features[word] = 0.0
+	for word in document:
+		if (word in high_info_wordSet) == False:
+			continue
+		else:
+			features[word] += idfDict[word]
+	return features
+
+def train(cleanedDataCollection, word_features, tagToBeTrained, high_info_wordSet):
 	random.shuffle(cleanedDataCollection)
-	featuresets = [(extractFeatureOfADocument(d,word_features), c) for (d,c) in cleanedDataCollection]
+	featuresets = [(extractTfIdfFeatureOfADocument(d,word_features, high_info_wordSet), c) for (d,c) in cleanedDataCollection]
 	train_set, test_set = featuresets[100:], featuresets[:100]
-	classifier = nltk.NaiveBayesClassifier.train(train_set)
-	print(nltk.classify.accuracy(classifier, test_set))
-	classifier.show_most_informative_features(5) 
-	return classifier
+
+	# classifier = nltk.NaiveBayesClassifier.train(train_set)
+	# print(nltk.classify.accuracy(classifier, test_set))
+	# classifier.show_most_informative_features(5) 
+	# return classifier
+
+	sk_classifier = SklearnClassifier(svm.NuSVC())
+	sk_classifier.train(train_set)
+	print "accuracy is: %s" % (accuracy(sk_classifier, test_set))
+
+	precision, recall, fMeasure = precision_recall_fmeasure(sk_classifier,  test_set, tagToBeTrained)
+
+	print "precision is: %s" % (precision)
+	print "recall is: %s" % (recall)
+	print "F-measure is: %s" % (fMeasure)
+	return sk_classifier
 
 
 cleanedDataCollection = []
+corpus = []
+tagToBeTrained = "tech"
 for fileName in os.listdir(workingDirectory):
 	if "The Verge" not in fileName:
 		continue
@@ -103,18 +140,42 @@ for fileName in os.listdir(workingDirectory):
 	with open(filePath) as data_file: 	
 		input_file  = file(filePath, "r")
 		data = json.loads(input_file.read())
-
-		cleanedData = getCleanStructuredData(data, "tech")
+		cleanedData = getCleanStructuredData(data, tagToBeTrained)
+		# corpus.append(cleanedData[0])
 		cleanedDataCollection.append(cleanedData)
 
-word_features = extractWordFeatureSet(cleanedDataCollection)
-classifier = train(cleanedDataCollection,word_features)
+# vectorizer = TfidfVectorizer(min_df=1,tokenizer=lambda doc: doc,lowercase=False)
+# X = vectorizer.fit_transform(corpus)
+# idf = vectorizer.idf_
+# idfDict = dict(zip(vectorizer.get_feature_names(), idf))
 
-f = open('/Users/Greyjoy/Downloads/word_features.pickle', 'wb')
-pickle.dump(word_features, f)
+currDir = os.getcwd()
+f = open(currDir + '/idfDict.pickle', 'rb')
+idfDict = pickle.load(f)
+print len(idfDict.keys())
 f.close()
 
-f = open('/Users/Greyjoy/Downloads/my_classifier.pickle', 'wb')
-pickle.dump(classifier, f)
-f.close()
+wordsOfTheLabel = []
+wordsWithOutTheLabel = []
+for data in cleanedDataCollection:
+	if tagToBeTrained == data[1]:
+		wordsOfTheLabel += data[0]
+	else:
+		wordsWithOutTheLabel += data[0]
+
+high_info_wordSet = set(high_information_words([(tagToBeTrained,wordsOfTheLabel), ( "NotThis",wordsWithOutTheLabel)]))
+print len(high_info_wordSet)
+
+# word_features = extractBinaryWordFeatureOfADocument(cleanedDataCollection)
+classifier = train(cleanedDataCollection,idfDict, tagToBeTrained, high_info_wordSet)
+
+
+
+# f = open('/Users/Greyjoy/Downloads/word_features.pickle', 'wb')
+# pickle.dump(word_features, f)
+# f.close()
+
+# f = open('/Users/Greyjoy/Downloads/my_classifier.pickle', 'wb')
+# pickle.dump(classifier, f)
+# f.close()
 
