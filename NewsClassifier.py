@@ -111,10 +111,10 @@ word_features = extractWordFeatureSet(cleanedDataCollection)
 classifier = train(cleanedDataCollection,word_features)
 
 f = open('/Users/Greyjoy/Downloads/word_features.pickle', 'wb')
-pickle.dump(word_features, f, -1)
+pickle.dump(word_features, f)
 f.close()
 
 f = open('/Users/Greyjoy/Downloads/my_classifier.pickle', 'wb')
-pickle.dump(classifier, f, -1)
+pickle.dump(classifier, f)
 f.close()
 

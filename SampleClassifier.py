@@ -50,6 +50,6 @@ def classifyDocument(inputFile):
 
 
 	documentFeatures = extractFeatureOfADocument(cleanedData,word_features)
-	print classifier.classify(documentFeatures)
+	return classifier.classify(documentFeatures)
 
 classifyDocument("Apple is good. I would exchange my kidney for one apple product.")
