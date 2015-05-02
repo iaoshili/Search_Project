@@ -1,4 +1,15 @@
-var myApp = angular.module('myApp', []);
+var myApp = angular.module('myApp', ['flow']).config(['flowFactoryProvider', function (flowFactoryProvider) {
+  flowFactoryProvider.defaults = {
+    target: '/upload',
+    permanentErrors: [404, 500, 501],
+    maxChunkRetries: 1,
+    chunkRetryInterval: 5000,
+    simultaneousUploads: 4
+  };
+  flowFactoryProvider.on('catchAll', function (event) {
+    console.log('catchAll', arguments);
+  });
+}]);
 
 myApp.directive('fileModel', ['$parse', function ($parse) {
     return {
@@ -52,7 +63,6 @@ myApp.controller('uploadCtrl', ['$scope', 'fileUpload', function($scope, fileUpl
             console.log(data);
         }, function(data){
             console.log("Upload file call back failed")
-        });
-        
+        });    
     };    
 }]);

@@ -13,6 +13,9 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-route.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-sanitize.js"></script>
     <script src="lib/ui-bootstrap-tpls-0.12.1.min.js"></script>
+    <script src="lib/ng-flow-standalone.min.js"></script>
+    <script src="lib/ng-flow.min.js"></script>
+    
 
     <script src="js/app.js"></script>
 </head>
@@ -21,7 +24,7 @@
   <div class="container">
     <ul class="nav nav-pills">
         <li role="presentation" class="active"><a href="#">Home</a></li>
-        <li role="presentation"><a href="basic.html">Tags</a></li>
+        <!--<li role="presentation"><a href="basic.html">Tags</a></li>-->
     </ul>
   </div>
 </nav>
@@ -34,6 +37,11 @@
                 <div class="input-group">
                     <input type="file" style="display: inline" file-model="myFile"/>
                     <button type="button" class="btn btn-primary" ng-click="uploadFile()">Upload</button><br/>
+                </div>
+                <div flow-init>
+                    <div class="alert" flow-drop flow-drag-enter="class='alert-success'" flow-drag-leave="class=''" ng-class="class">
+                    Drag And Drop your file here
+                    </div>
                 </div>
                 <table class="table table-striped">        
                     <tr>
