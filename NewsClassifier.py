@@ -25,6 +25,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.pipeline import Pipeline
 from featx import high_information_words
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.svm import LinearSVC
 
 '''
 重要！请把workingDirectory修改成Data文件夹所在目录，以"/"结尾。
@@ -34,7 +37,7 @@ nltk使用参考：http://www.nltk.org/book/ch06.html
 一个是正文: a list of words (只是单词，不是chunk of words)
 一个是category：neg或者
 '''
-TITLE_BONUS = 50
+TITLE_BONUS = 1
 NUM_FEATUREWORDS = 3000
 
 workingDirectory = "/Users/Greyjoy/Documents/Homework/Search_Project/Data/"
@@ -111,14 +114,14 @@ def extractTfIdfFeatureOfADocument(document, idfDict, high_info_wordSet):
 def train(cleanedDataCollection, word_features, tagToBeTrained, high_info_wordSet):
 	random.shuffle(cleanedDataCollection)
 	featuresets = [(extractTfIdfFeatureOfADocument(d,word_features, high_info_wordSet), c) for (d,c) in cleanedDataCollection]
-	train_set, test_set = featuresets[100:], featuresets[:100]
+	train_set, test_set = featuresets[800:], featuresets[:800]
 
 	# classifier = nltk.NaiveBayesClassifier.train(train_set)
 	# print(nltk.classify.accuracy(classifier, test_set))
 	# classifier.show_most_informative_features(5) 
 	# return classifier
 
-	sk_classifier = SklearnClassifier(svm.NuSVC())
+	sk_classifier = SklearnClassifier(svm.SVC())
 	sk_classifier.train(train_set)
 	print "accuracy is: %s" % (accuracy(sk_classifier, test_set))
 
@@ -141,13 +144,17 @@ for fileName in os.listdir(workingDirectory):
 		input_file  = file(filePath, "r")
 		data = json.loads(input_file.read())
 		cleanedData = getCleanStructuredData(data, tagToBeTrained)
-		# corpus.append(cleanedData[0])
+		corpus.append(cleanedData[0])
 		cleanedDataCollection.append(cleanedData)
 
-# vectorizer = TfidfVectorizer(min_df=1,tokenizer=lambda doc: doc,lowercase=False)
-# X = vectorizer.fit_transform(corpus)
-# idf = vectorizer.idf_
-# idfDict = dict(zip(vectorizer.get_feature_names(), idf))
+vectorizer = TfidfVectorizer(min_df=1,tokenizer=lambda doc: doc,lowercase=False)
+X = vectorizer.fit_transform(corpus)
+idf = vectorizer.idf_
+idfDict = dict(zip(vectorizer.get_feature_names(), idf))
+currDir = os.getcwd()
+f = open(currDir + '/idfDict.pickle', 'wb')
+pickle.dump(idfDict, f)
+f.close()
 
 currDir = os.getcwd()
 f = open(currDir + '/idfDict.pickle', 'rb')
