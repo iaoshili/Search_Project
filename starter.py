@@ -9,6 +9,7 @@ import SampleClassifier
 
 _UPLOADS = "uploads/"
 SETTINGS = {"static_path": "./webapp"}
+REMOVE_PUNCT_MAP = dict((ord(char), None) for char in "0123456789=[]\\\"\'")
 
 class UploadHandler(web.RequestHandler):
 
@@ -27,13 +28,21 @@ class UploadHandler(web.RequestHandler):
         fh = open(_UPLOADS + cname, 'w')
         fh.write(fileinfo['body'])
         textBody, oriTags = self.loadVergeText(fileinfo['body'])
+        clean_tags = set()
+        for tag in oriTags:
+                tag = tag.translate(REMOVE_PUNCT_MAP)
+                if len(tag) != 0:
+                    temp = tag.split(",")
+                for t in temp:
+                    clean_tags.add(t)
+        clean_tags = list(clean_tags)
         tags = SampleClassifier.classifyDocument(textBody)
         response = {
             "status" : "OK",
             "file_name" : cname,
             "folder" : _UPLOADS,
             "classify_tags" : tags,
-            "origianl_tags" : oriTags
+            "origianl_tags" : ",".join(clean_tags)
         }
         self.finish(json.dumps(response))
 

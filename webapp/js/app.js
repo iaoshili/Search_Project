@@ -21,9 +21,8 @@ myApp.directive('fileModel', ['$parse', function ($parse) {
             element.bind('change', function(){
                 scope.$apply(function(){
                     modelSetter(scope, element[0].files[0]);
-                    console.log("MyFile: " + JSON.stringify(scope.myFile))
-                    console.log("In directive, scope is ")
-                    console.log(scope)
+                    console.log("MyFile: ")
+                    console.log(scope.myFile)
                 });
             });
         }
@@ -51,16 +50,22 @@ myApp.service('fileUpload', ['$http', '$q', function ($http, $q) {
 
 myApp.controller('uploadCtrl', ['$scope', 'fileUpload', function($scope, fileUpload){
     
-
-    $scope.uploadFile = function(){
-        console.log("In Ctrl, scope is ")
-        console.log($scope)
-        var file = $scope.myFile;
-        console.log('file is ' + JSON.stringify(file));
+    $scope.$on('flow::filesSubmitted', function (event, $flow, flowFile) {
+        console.log(flowFile[0]['file'])
+        var file = flowFile[0]['file']
         var uploadUrl = "/upload";
         fileUpload.uploadFileToUrl(file, uploadUrl).then(function(data){
             $scope.data = data;
-            console.log(data);
+        }, function(data){
+            console.log("Upload file call back failed")
+        });    
+    });
+
+    $scope.uploadFile = function(){
+        var file = $scope.myFile;
+        var uploadUrl = "/upload";
+        fileUpload.uploadFileToUrl(file, uploadUrl).then(function(data){
+            $scope.data = data;
         }, function(data){
             console.log("Upload file call back failed")
         });    

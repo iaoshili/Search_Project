@@ -19,7 +19,7 @@
 
     <script src="js/app.js"></script>
 </head>
-<body ng-controller="uploadCtrl">
+<body ng-controller="uploadCtrl" flow-init>
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     <ul class="nav nav-pills">
@@ -38,11 +38,11 @@
                     <input type="file" style="display: inline" file-model="myFile"/>
                     <button type="button" class="btn btn-primary" ng-click="uploadFile()">Upload</button><br/>
                 </div>
-                <div flow-init>
-                    <div class="alert" flow-drop flow-drag-enter="class='alert-success'" flow-drag-leave="class=''" ng-class="class">
+                
+                <div class="alert" flow-drop flow-drag-enter="class='alert-success'" flow-drag-leave="class=''" ng-class="class">
                     Drag And Drop your file here
-                    </div>
                 </div>
+                
                 <table class="table table-striped">        
                     <tr>
                         <td>upload_file_name: </td>
