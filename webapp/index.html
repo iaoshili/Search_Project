@@ -16,12 +16,12 @@
 
     <script src="js/app.js"></script>
 </head>
-<body>
+<body ng-controller="uploadCtrl">
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     <ul class="nav nav-pills">
         <li role="presentation" class="active"><a href="#">Home</a></li>
-        <!--<li role="presentation"><a href="#">Tags</a></li>-->
+        <li role="presentation"><a href="basic.html">Tags</a></li>
     </ul>
   </div>
 </nav>
@@ -30,14 +30,25 @@
             <h1>Tag Search</h1>
         </div>
         <div id="textDiv" class="row">
-            <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 text-center">
-                <div class="input-group" ng-controller="uploadCtrl">
-                    <input type="file" file-model="myFile"/>
-                    <button ng-click="uploadFile()">upload me</button><br/>
-                    file_name : {{data.file_name}}<br/>
-                    classify_tags: {{data.classify_tags}}<br/>
-                    original_tags: {{data.origianl_tags}}
+            <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 text-center">       
+                <div class="input-group">
+                    <input type="file" style="display: inline" file-model="myFile"/>
+                    <button type="button" class="btn btn-primary" ng-click="uploadFile()">Upload</button><br/>
                 </div>
+                <table class="table table-striped">        
+                    <tr>
+                        <td>upload_file_name: </td>
+                        <td>{{data.file_name}}</td>
+                    </tr>  
+                    <tr>
+                        <td>classify_tag: </td>
+                        <td>{{data.classify_tags}}</td>
+                    </tr>   
+                    <tr>
+                        <td>original_tags:</td>
+                        <td>{{data.origianl_tags}}</td>
+                    </tr>
+                </table>
             </div>
         </div>
 </div>

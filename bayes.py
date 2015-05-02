@@ -1,17 +1,27 @@
 import logging
 from numpy import *
+import re
+import preprocess
+import pickle
+import os
 
 logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s', level=logging.DEBUG)
+WORKING_DIR = "Data/"
+
+def createDataDump():
+    data = {}   
+    data['docList'], data['fullText'], data['classDict'] = preprocess.main();
+    data['vocabList'] = createVocabList(data['docList'])
+    f = open('yyy_all_data.pkl', 'wb')
+    pickle.dump(data, f)
+    f.close()
 
 def loadDataSet():
-    postlingList = [['my', 'dog', 'has', 'flea', 'problems', 'help', 'please'],
-                    ['maybe', 'not', 'take', 'him', 'to', 'dog', 'park', 'stupid'],
-                    ['my', 'dalmation', 'is', 'so', 'cute', 'I', 'love', 'him'],
-                    ['stop', 'posting', 'stupid', 'worthless', 'garbage'],
-                    ['mr', 'licks', 'ate', 'my', 'steak', 'how','to', 'stop', 'him'],
-                    ['quit', 'buying', 'worthless', 'dog', 'food', 'stupid']]
-    classVec = [0,1,0,1,0,1]
-    return postlingList, classVec
+    f = open('yyy_all_data.pkl', 'rb')
+    data = pickle.load(f)
+    f.close()
+    logging.info("Load data set. length is %d" % len(data['docList']))
+    return data
 
 def createVocabList(dataSet):
     vocabSet = set([])
@@ -77,6 +87,72 @@ def testingNB():
     print testEntry,'classified as: ',classifyNB(thisDoc,p0V,p1V,pAb)
 
 
+
+def dataTest():
+    data = loadDataSet()
+    docList = data['docList']
+    fullText = data['fullText']
+    classDict = data['classDict']
+    vocabList = data['vocabList']
+    total_docs = len(data['docList'])
+    random_key = random.choice(classDict.keys())
+    logging.info("Random key is: %s" % random_key)
+    logging.info("Random value is %s" % classDict[random_key])
+    trainingSet = range(total_docs)
+    testSet = []
+    for i in range(1000):   # 1000 test set
+        randIndex = int(random.uniform(0, len(trainingSet)))
+        testSet.append(trainingSet[randIndex])
+        del(trainingSet[randIndex])
+    trainMat = []
+    trainClasses = []
+    for docIndex in trainingSet:
+        trainMat.append(bagOfWords2VecMN(vocabList, docList[docIndex]))
+        trainClasses.append(classDict[random_key][docIndex])
+    p0V, p1V, pSpam = trainNB0(array(trainMat), array(trainClasses))
+    errorCount = 0
+    for docIndex in testSet:
+        wordVector = bagOfWords2VecMN(vocabList, docList[docIndex])
+        if classifyNB(array(wordVector), p0V,p1V, pSpam) != classDict[random_key][docIndex]:
+            errorCount += 1
+    print 'the error rate is: ', float(errorCount) / len(testSet)
+    
+
+
+def spamTest():
+    docList = []
+    classList = []
+    fullText = []
+    for i in range(1,26):
+        wordList = textParse(open('spam%d.txt' % i).read())
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(1)
+        wordList = textParse(open('ham%d.txt' % i).read())
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(0)
+    vocabList = createVocabList(docList)
+    trainingSet = range(50)
+    testSet = []
+    for i in range(10):
+        randIndex = int(random.uniform(0, len(trainingSet)))
+        testSet.append(trainingSet[randIndex])
+        del(trainingSet[randIndex])
+    trainMat = []
+    trainClasses = []
+    for docIndex in trainingSet:
+        trainMat.append(setOfWords2Vec(vocabList, docList[docIndex]))
+        trainClasses.append(classList[docIndex])
+    p0V, p1V, pSpam = trainNB0(array(trainMat), array(trainClasses))
+    errorCount = 0
+    for docIndex in testSet:
+        wordVector = setOfWords2Vec(vocabList, docList[docIndex])
+        if classifyNB(array(wordVector), p0V,p1V, pSpam) != classList[docIndex]:
+            errorCount += 1
+    print 'the error rate is: ', float(errorCount) / len(testSet)
+
+
 '''
 This approach is known as a bag-of-words model. 
 A bag of words can have multiple occurrences of each word, 
@@ -84,9 +160,8 @@ whereas a set of words can have only one occurrence of each word.
 '''
 
 if __name__ == "__main__":
-    testingNB()
-
-
+    dataTest()
+    
 
 
 
