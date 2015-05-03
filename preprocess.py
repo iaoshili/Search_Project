@@ -17,6 +17,10 @@ import logging
 WORKING_DIR = "Data/"
 Tags_Set = set()
 REMOVE_PUNCT_MAP = dict((ord(char), None) for char in "0123456789=[]\\\"\'")
+tagSet = set([u'tech',u'apple',u'google',u'microsoft',u'mobile',u'business',u'photography',u'home',u'apps',
+u'science',u'entertainment',u'culture',u'gaming',u'web',u'movie-reviews',u'transportation',
+u'design', u'architecture',u'typography',u'concepts',
+u'us-world',u'business',u'politics',u'national-security',u'policy'])
 
 def main():
     f = open('yyy_tags.pkl', 'rb')
@@ -74,6 +78,13 @@ def getAllTag():
     f.close()
 
 if __name__ == "__main__":
-    main()
+    #main()
+    tagSet = list(tagSet)
+    tags = {
+        'tags' : tagSet
+    }
+    with open('tags.json', 'w') as outfile:
+        json.dump(tags, outfile)
+
     
 

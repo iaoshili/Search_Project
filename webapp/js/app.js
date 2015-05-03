@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp', ['flow']).config(['flowFactoryProvider', function (flowFactoryProvider) {
+var myApp = angular.module('myApp', ['flow','ngRoute']).config(['flowFactoryProvider', function (flowFactoryProvider) {
   flowFactoryProvider.defaults = {
     target: '/upload',
     permanentErrors: [404, 500, 501],
@@ -7,22 +7,26 @@ var myApp = angular.module('myApp', ['flow']).config(['flowFactoryProvider', fun
     simultaneousUploads: 4
   };
   flowFactoryProvider.on('catchAll', function (event) {
-    console.log('catchAll', arguments);
+    //console.log('catchAll', arguments);
   });
+}])
+.config(['$routeProvider',function($routeProvider) {
+    $routeProvider.
+        when('/',{
+            templateUrl: 'partials/tagSearch.html'
+        })
 }]);
 
 myApp.directive('fileModel', ['$parse', function ($parse) {
     return {
         restrict: 'A',
+        scope: false,
         link: function(scope, element, attrs) {
             var model = $parse(attrs.fileModel);
             var modelSetter = model.assign;
-            
             element.bind('change', function(){
                 scope.$apply(function(){
                     modelSetter(scope, element[0].files[0]);
-                    console.log("MyFile: ")
-                    console.log(scope.myFile)
                 });
             });
         }
@@ -49,9 +53,8 @@ myApp.service('fileUpload', ['$http', '$q', function ($http, $q) {
 }]);
 
 myApp.controller('uploadCtrl', ['$scope', 'fileUpload', function($scope, fileUpload){
-    
+
     $scope.$on('flow::filesSubmitted', function (event, $flow, flowFile) {
-        console.log(flowFile[0]['file'])
         var file = flowFile[0]['file']
         var uploadUrl = "/upload";
         fileUpload.uploadFileToUrl(file, uploadUrl).then(function(data){
