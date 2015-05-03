@@ -14,7 +14,7 @@ import os
 import hashlib
 
 NUM_RESULTS = 10
-SETTINGS = {"static_path": "assignment3_p/webapp"}
+SETTINGS = {"static_path": "assignment3/webapp"}
 
 class HashPartitioner:
 	def __init__(self, numReducers):

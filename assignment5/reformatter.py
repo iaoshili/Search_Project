@@ -16,9 +16,9 @@ def main():
     docID_tagList = defaultdict(list)
     with open('tags.json') as tag_file:
         all_tags = json.load(tag_file)['tags']
-    logging.info(all_tags)
+    #logging.info(all_tags)
     numParitition = 5
-    jobPath = "jobPath/"
+    jobPath = "df_jobs/"
     if os.path.exists(jobPath):
         shutil.rmtree(jobPath)
     os.makedirs(jobPath)
@@ -54,8 +54,8 @@ def main():
     for idx, file_name in enumerate(all_files_name):
         pickle.dump(contents[idx], open(file_name,"wb"))
         logging.info("Dump to %s", file_name)
-    with open('docTagList.json', 'w') as outfile:
-        json.dump(docID_tagList, outfile)
+    # with open('docTagList.json', 'w') as outfile:
+    #     json.dump(docID_tagList, outfile)
 
     
 if __name__ == "__main__":
