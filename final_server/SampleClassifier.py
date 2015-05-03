@@ -29,27 +29,55 @@ def getCleanStructuredData(text):
 	return cleanedData
 
 
-def extractFeatureOfADocument(document, word_features):
-    document_words = set(document) 
-    features = {}
-    for word in word_features:
-        features['contains(%s)' % word] = (word in document_words)
-    return features
+def extractTfIdfFeatureOfADocument(document, idfDict, high_info_wordSet):
+	features = {}
+	for word in high_info_wordSet:
+		features[word] = 0.0
+	for word in document:
+		if (word in high_info_wordSet) == False:
+			continue
+		else:
+			features[word] += idfDict[word]
+	return features
 
+def loadClassifiers():
+	classifiers = []
+	currDir = os.getcwd()
+	files = [f for f in os.listdir('.') if os.path.isfile(f)]
+	for f in files:
+		if "classifier.pickle" in f:
+			classifyF = open(currDir + '/'+f, 'rb')
+			classifier = pickle.load(classifyF)
+			classifiers.append(classifier)
+			classifyF.close()
+	return classifiers
 
+def getTags(classifiers, documentFeatures):
+	tags = []
+	for classifier in classifiers:
+		tag = classifier.classify(documentFeatures)
+		if tag != "NotThis":
+		 	tags.append(tag)
+	return tags
+
+#Input is string.
+#Return a list of tags that correspond to this document.
 def classifyDocument(inputFile):
 	cleanedData = getCleanStructuredData(inputFile)
 	currDir = os.getcwd()
-	f = open(currDir + '/my_classifier.pickle', 'rb')
-	classifier = pickle.load(f)
+	f = open(currDir+'/high_info_wordSet.pickle', 'rb')
+	high_info_wordSet = pickle.load(f)
 	f.close()
 
-	f = open(currDir+'/word_features.pickle', 'rb')
-	word_features = pickle.load(f)
+	f = open(currDir+'/idfDict.pickle', 'rb')
+	idfDict = pickle.load(f)
 	f.close()
 
+	documentFeatures = extractTfIdfFeatureOfADocument(cleanedData,idfDict,high_info_wordSet)
 
-	documentFeatures = extractFeatureOfADocument(cleanedData,word_features)
-	return classifier.classify(documentFeatures)
+	classifiers = loadClassifiers()
+	tags = getTags(classifiers, documentFeatures)
+	return tags
 
-classifyDocument("Apple is good. I would exchange my kidney for one apple product.")
+#Demo
+# print classifyDocument("Apple is good. I would exchange my kidney for one apple product.")
