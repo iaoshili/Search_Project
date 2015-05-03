@@ -1,8 +1,8 @@
 import hashlib
 import getpass
 
-NUM_INDEX_SHARDS = 3
-NUM_DOC_SHARDS = 3
+NUM_INDEX_SHARDS = 10
+NUM_DOC_SHARDS = 10
 MAX_PORT = 49152
 MIN_PORT = 10000
 BASE_PORT = int(hashlib.md5(getpass.getuser()).hexdigest()[:8], 16) % \

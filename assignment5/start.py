@@ -4,7 +4,7 @@ import logging
 import sys
 
 logging.basicConfig(level=logging.DEBUG)
-NUM_REDUCERS = 3
+NUM_REDUCERS = 10
 
 def main():
 	doc_process_args = "python assignment4/coordinator.py --mapperPath=assignment4/document_store/doc_mapper.py --reducerPath=assignment4/document_store/doc_reducer.py --jobPath=assignment5/i_df_jobs --numReducers=%d" % NUM_REDUCERS
