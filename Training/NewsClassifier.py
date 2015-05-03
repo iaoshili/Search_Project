@@ -37,7 +37,7 @@ nltk使用参考：http://www.nltk.org/book/ch06.html
 一个是正文: a list of words (只是单词，不是chunk of words)
 一个是category：neg或者
 '''
-TITLE_BONUS = 1
+TITLE_BONUS = 10
 NUM_FEATUREWORDS = 3000
 
 workingDirectory = "/Users/Greyjoy/Documents/Homework/Search_Project/Data/"
@@ -121,7 +121,7 @@ def train(cleanedDataCollection, word_features, tagToBeTrained, high_info_wordSe
 	# classifier.show_most_informative_features(5) 
 	# return classifier
 
-	sk_classifier = SklearnClassifier(svm.SVC())
+	sk_classifier = SklearnClassifier(svm.NuSVC())
 	sk_classifier.train(train_set)
 	print "accuracy is: %s" % (accuracy(sk_classifier, test_set))
 
