@@ -2,7 +2,7 @@ from collections import defaultdict
 import hashlib
 import getpass
 
-NUM_WORKERS = 4
+NUM_WORKERS = 10
 MAX_PORT = 49152
 MIN_PORT = 10000
 BASE_PORT = int(hashlib.md5(getpass.getuser() + "salt").hexdigest()[:8], 16) % \
