@@ -37,10 +37,9 @@ nltk使用参考：http://www.nltk.org/book/ch06.html
 一个是正文: a list of words (只是单词，不是chunk of words)
 一个是category：neg或者
 '''
-TITLE_BONUS = 10
-NUM_FEATUREWORDS = 3000
+TITLE_BONUS = 1
 
-workingDirectory = "/Users/Greyjoy/Documents/Homework/Search_Project/Data/"
+workingDirectory = "/Users/Greyjoy/Documents/Homework/Data/"
 
 tagSet = set([u'tech',u'apple',u'google',u'microsoft',u'mobile',u'business',u'photography',u'home',u'apps',
 u'science',u'entertainment',u'culture',u'gaming',u'web',u'movie-reviews',u'transportation',
@@ -121,7 +120,7 @@ def train(cleanedDataCollection, word_features, tagToBeTrained, high_info_wordSe
 	# classifier.show_most_informative_features(5) 
 	# return classifier
 
-	sk_classifier = SklearnClassifier(svm.NuSVC())
+	sk_classifier = SklearnClassifier(MultinomialNB())
 	sk_classifier.train(train_set)
 	print "accuracy is: %s" % (accuracy(sk_classifier, test_set))
 
@@ -135,7 +134,7 @@ def train(cleanedDataCollection, word_features, tagToBeTrained, high_info_wordSe
 
 cleanedDataCollection = []
 corpus = []
-tagToBeTrained = "tech"
+tagToBeTrained = "design"
 for fileName in os.listdir(workingDirectory):
 	if "The Verge" not in fileName:
 		continue
@@ -144,17 +143,17 @@ for fileName in os.listdir(workingDirectory):
 		input_file  = file(filePath, "r")
 		data = json.loads(input_file.read())
 		cleanedData = getCleanStructuredData(data, tagToBeTrained)
-		corpus.append(cleanedData[0])
+		# corpus.append(cleanedData[0])
 		cleanedDataCollection.append(cleanedData)
 
-vectorizer = TfidfVectorizer(min_df=1,tokenizer=lambda doc: doc,lowercase=False)
-X = vectorizer.fit_transform(corpus)
-idf = vectorizer.idf_
-idfDict = dict(zip(vectorizer.get_feature_names(), idf))
-currDir = os.getcwd()
-f = open(currDir + '/idfDict.pickle', 'wb')
-pickle.dump(idfDict, f)
-f.close()
+# vectorizer = TfidfVectorizer(min_df=1,tokenizer=lambda doc: doc,lowercase=False)
+# X = vectorizer.fit_transform(corpus)
+# idf = vectorizer.idf_
+# idfDict = dict(zip(vectorizer.get_feature_names(), idf))
+# currDir = os.getcwd()
+# f = open(currDir + '/idfDict.pickle', 'wb')
+# pickle.dump(idfDict, f)
+# f.close()
 
 currDir = os.getcwd()
 f = open(currDir + '/idfDict.pickle', 'rb')
@@ -170,19 +169,29 @@ for data in cleanedDataCollection:
 	else:
 		wordsWithOutTheLabel += data[0]
 
-high_info_wordSet = set(high_information_words([(tagToBeTrained,wordsOfTheLabel), ( "NotThis",wordsWithOutTheLabel)]))
+# high_info_wordSet = set(high_information_words([(tagToBeTrained,wordsOfTheLabel), ( "NotThis",wordsWithOutTheLabel)]))
+# currDir = os.getcwd()
+# f = open(currDir + '/high_info_wordSet.pickle', 'wb')
+# pickle.dump(high_info_wordSet, f)
+# f.close()
+
+currDir = os.getcwd()
+f = open(currDir + '/high_info_wordSet.pickle', 'rb')
+high_info_wordSet = pickle.load(f)
+f.close()
+
+
 print len(high_info_wordSet)
 
 # word_features = extractBinaryWordFeatureOfADocument(cleanedDataCollection)
 classifier = train(cleanedDataCollection,idfDict, tagToBeTrained, high_info_wordSet)
 
-
-
 # f = open('/Users/Greyjoy/Downloads/word_features.pickle', 'wb')
 # pickle.dump(word_features, f)
 # f.close()
 
-# f = open('/Users/Greyjoy/Downloads/my_classifier.pickle', 'wb')
-# pickle.dump(classifier, f)
-# f.close()
+currDir = os.getcwd()
+f = open(currDir+"/"+tagToBeTrained+'_classifier.pickle', 'wb')
+pickle.dump(classifier, f)
+f.close()
 
