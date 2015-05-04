@@ -45,6 +45,7 @@ tagSet = set([u'tech',u'apple',u'google',u'microsoft',u'mobile',u'business',u'ph
 u'science',u'entertainment',u'culture',u'gaming',u'web',u'movie-reviews',u'transportation',
 u'design', u'architecture',u'typography',u'concepts',
 u'us-world',u'business',u'politics',u'national-security',u'policy'])
+tagToBeTrained = "transportation"
 
 
 '''
@@ -55,6 +56,7 @@ Each tuple is composed of:
 2 The tag that is currently interested in bi-partitioning.
 e.x. If is classifying between "tech" and "non-tech". These two will be the second element of the tuple.
 '''
+
 def getCleanStructuredData(data, tag):
 	label = ""
 	#Deal with text
@@ -134,7 +136,6 @@ def train(cleanedDataCollection, word_features, tagToBeTrained, high_info_wordSe
 
 cleanedDataCollection = []
 corpus = []
-tagToBeTrained = "design"
 for fileName in os.listdir(workingDirectory):
 	if "The Verge" not in fileName:
 		continue
