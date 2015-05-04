@@ -6,7 +6,7 @@ import logging
 import os, uuid
 import json
 import SampleClassifier
-
+import codecs
 import pickle
 import index
 import doc
@@ -35,16 +35,18 @@ class UploadHandler(web.RequestHandler):
         #logging.info("fileinfo is %s" % fileinfo)
         fname = fileinfo['filename']
         ftype = fileinfo['content_type']
-        logging.info("Upload File Name is %s" % fname)
-        logging.info("Upload File Type is %s" % ftype)
-        logging.info("File size is %d" % len(fileinfo['body']))
+        #logging.info("Upload File Name is %s" % fname)
+        #logging.info("Upload File Type is %s" % ftype)
+        #logging.info("File size is %d" % len(fileinfo['body']))
+        #print type(fileinfo['body']) 
         extn = os.path.splitext(fname)[1]
         cname = str(uuid.uuid4()) + extn
-        logging.info(_UPLOADS)
+        #logging.info(_UPLOADS)
         fh = open(_UPLOADS + cname, 'w')
         fh.write(fileinfo['body'])
-        textBody, oriTags = self.loadVergeText(fileinfo['body'])
-        #oriTags = []
+        #textBody, oriTags = self.loadVergeText(fileinfo['body'])
+        oriTags = []
+        textBody = unicode(fileinfo['body'], "utf-8")
         clean_tags = set()
         for tag in oriTags:
                 tag = tag.translate(REMOVE_PUNCT_MAP)
@@ -58,7 +60,7 @@ class UploadHandler(web.RequestHandler):
             "status" : "OK",
             "file_name" : cname,
             "folder" : _UPLOADS,
-            "classify_tags" : tags,
+            "classify_tags" : ",".join(tags),
             "origianl_tags" : ",".join(clean_tags)
         }
         self.finish(json.dumps(response))

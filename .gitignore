@@ -3,4 +3,6 @@
 *.pkl
 *.in
 *.out
+final_server/uploads/*
+.nfs00000000000151b400000202
 *.pyc
