@@ -1,4 +1,4 @@
-<div ng-controller="mainController">
+<div>
         <div class="container-fluid">
             <form ng-submit="search()">
                 <div id="titleDiv" class="row text-center">
@@ -8,13 +8,18 @@
                     <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 text-center">
                         <div class="input-group">
                             <input type="text" class="form-control" size="40" ng-model="formData.query">
+                            <label>All tags:
+				<select ng-model="formData.search_tag" ng-options="tag for tag in all_tags"></select>
+			    </label>
+ 			<button type="submit" class="btn btn-primary btn-lg btn-block">Search</button>
+			<!--
                             <span class="input-group-btn">
-                                <button class="btn btn-primary" type="submit">Search</button>
+                                <button class="btn btn-primary" style="left-padding: 20px" type="submit">Search</button>
                             </span>
+			-->
                         </div>
                     </div>
                 </div>
             </form>
-            {{ all_tags }}
         </div>
     </div>

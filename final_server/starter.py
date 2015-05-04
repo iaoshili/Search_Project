@@ -156,7 +156,7 @@ def main():
         if taskID <= inventory.NUM_INDEX_SHARDS:
             shardIx = taskID - 1
             #data = pickle.load(open("data/index%d.pkl" % (shardIx), "r"))
-            inverted_path = os.path.join(os.getcwd(),"../assignment5/i_df_jobs/%d.out"  % (shardIx))
+            inverted_path = os.path.join(os.getcwd(),"../assignment5/df_jobs/%d.out"  % (shardIx))
             logging.info("Inverted file path: %s" % inverted_path)
             data = pickle.load(open(inverted_path ,'r'))
             idf_path = os.path.join(os.getcwd(), "../assignment5/idf_jobs/0.out")
@@ -166,7 +166,7 @@ def main():
         else:
             shardIx = taskID - inventory.NUM_INDEX_SHARDS - 1
             #data = pickle.load(open("data/doc%d.pkl" % (shardIx), "r"))
-            doc_path = os.path.join(os.getcwd(),"../assignment5/df_jobs/%d.out" % (shardIx))
+            doc_path = os.path.join(os.getcwd(),"../assignment5/i_df_jobs/%d.out" % (shardIx))
             logging.info("Doc Server path %s" % doc_path)
             data = pickle.load(open(doc_path, "r"))
             app = httpserver.HTTPServer(web.Application([(r"/doc", doc.Doc, dict(data=data))]))

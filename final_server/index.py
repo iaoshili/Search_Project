@@ -10,12 +10,16 @@ import urlparse
 import urllib
 from collections import defaultdict
 import numpy as np
+import logging
 from sklearn.metrics.pairwise import linear_kernel
+
+logging.basicConfig(level=logging.DEBUG)
 
 class Index(web.RequestHandler):
 	def initialize(self, data, logIDF):
 		self._postingsLists = data
 		self._logIDF = logIDF
+		logging.warn(self._postingsLists)
 
 	def head(self):
 		self.finish()
