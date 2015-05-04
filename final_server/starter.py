@@ -80,6 +80,8 @@ class Web(web.RequestHandler):
         tag = self.get_argument('tag', None)
         if q is None:
             return
+        if tag is None:
+            tag = ""
 
         # Fetch postings from index servers
         http = httpclient.AsyncHTTPClient()     
@@ -96,7 +98,7 @@ class Web(web.RequestHandler):
         docIDToResultIx = {}
         partition = HashPartitioner(inventory.NUM_DOC_SHARDS)
         final_postings = postings
-        if tag is not None:
+        if len(tag) !=0:
             postings = []
             for doc in final_postings:
                 docID_str = unicode(doc[0])
@@ -116,6 +118,8 @@ class Web(web.RequestHandler):
         resultList = [None] * min(len(postings), NUM_RESULTS)
         for response in responses:
             for result in json.loads(response.body)['results']:
+                docID = unicode(int(result['docID']))
+                result['tags'] = ",".join(docTagList[docID])
                 resultList[docIDToResultIx[int(result['docID'])]] = result
         self.write(json.dumps({"numResults": len(resultList), "results": resultList}))
         self.finish()

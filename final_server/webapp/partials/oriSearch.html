@@ -12,11 +12,16 @@
 				<select ng-model="formData.search_tag" ng-options="tag for tag in all_tags"></select>
 			    </label>
  			<button type="submit" class="btn btn-primary btn-lg btn-block">Search</button>
-			<!--
-                            <span class="input-group-btn">
-                                <button class="btn btn-primary" style="left-padding: 20px" type="submit">Search</button>
-                            </span>
-			-->
+			
+             <ul class="list-group">
+                <li ng-repeat="result in searchResult" class="list-group-item">
+                    <span> Title : {{result.title}} </span><br/>
+                    <span> Tags: {{result.tags}}
+                    <p>Snippet: {{result.snippet}}</p>
+                </li>
+            </ul>
+
+
                         </div>
                     </div>
                 </div>

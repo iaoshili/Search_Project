@@ -122,7 +122,6 @@ myApp.controller('uploadCtrl', ['$scope', 'fileUpload', function($scope, fileUpl
 		console.log(SearchService);   
        SearchService.getSearchResult(query, tag).then(function(data){
         $scope.searchResult = data;
-        console.log(data)
        }, function(data){
          console.log("Get Search Result error")
        })
