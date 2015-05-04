@@ -1,4 +1,6 @@
 *.txt
 *.pdf
 *.pkl
+*.in
+*.out
 *.pyc
