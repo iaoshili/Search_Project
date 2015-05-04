@@ -1,0 +1,55 @@
+<div ng-controller="mainController">
+        <div class="container-fluid" ng-if="!activeQuery">
+            <form ng-submit="search()">
+                <div id="titleDiv" class="row text-center">
+                    <h1>MetaSearch</h1>
+                </div>
+                <div id="textDiv" class="row">
+                    <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 text-center">
+                        <div class="input-group">
+                            <input type="text" class="form-control" size="40" ng-model="formData.query">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="container-fluid" ng-if="activeQuery">
+            <div id="navDiv" class="row" style="padding-left: 3px; border-bottom: 0px black solid;">
+                <div class="col-lg-3 col-md-3" style="width: auto;">
+                    <h1 style="margin-top: -6px; margin-bottom: 10px;">
+                        MetaSearch
+                    </h1>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-9 col-xs-11">
+                    <form ng-submit="search()">
+                        <div class="input-group" style="margin-bottom: 10px;">
+                            <input type="text" class="form-control" size="40" ng-model="formData.query">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row" ng-if="errorText">
+                <div class="col-sm-6">
+                    <p class="status bg-danger">{{ errorText }}</p>
+                </div>
+            </div>
+            <div class="row" ng-if="delay">
+                <div class="col-sm-6 text-center">
+                    <p class="status bg-info">{{ totalItems }} results ({{ delay }} seconds)</p>
+                </div>
+            </div>
+            <div class="result-holder"></div>
+                <div class="result-row row" ng-repeat="result in results">
+                    <div class="col-sm-6" ng-bind-html="result">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

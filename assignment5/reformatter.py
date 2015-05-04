@@ -18,7 +18,7 @@ def main():
         all_tags = json.load(tag_file)['tags']
     #logging.info(all_tags)
     numParitition = 10
-    paths = ["df_jobs/", 'i_df_jobs', 'idf_jobs']
+    paths = ["df_jobs/", 'i_df_jobs/', 'idf_jobs/']
     for jobPath in paths:
         if os.path.exists(jobPath):
             shutil.rmtree(jobPath)
