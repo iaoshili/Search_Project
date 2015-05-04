@@ -10,7 +10,7 @@ from collections import *
 
 logging.basicConfig(level=logging.INFO)
 REMOVE_PUNCT_MAP = dict((ord(char), None) for char in "0123456789=[]\\\"\'")
-WORKING_DIR = "Data/"
+WORKING_DIR = "SmallData/"
 
 def main():
     docID_tagList = defaultdict(list)

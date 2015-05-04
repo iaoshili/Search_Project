@@ -9,7 +9,6 @@ import cgi
 import nltk
 import string
 import re
-import indexer
 
 class Doc(web.RequestHandler):	
 	def initialize(self, data):

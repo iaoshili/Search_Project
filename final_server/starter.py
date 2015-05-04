@@ -16,8 +16,8 @@ from collections import *
 import hashlib
 
 NUM_RESULTS = 10
-_UPLOADS = "final_server/uploads/"
-SETTINGS = {"static_path": "final_server/webapp"}
+_UPLOADS = "./uploads/"
+SETTINGS = {"static_path": "./webapp"}
 REMOVE_PUNCT_MAP = dict((ord(char), None) for char in "0123456789=[]\\\"\'")
 
 class HashPartitioner:
@@ -154,17 +154,17 @@ def main():
         if taskID <= inventory.NUM_INDEX_SHARDS:
             shardIx = taskID - 1
             #data = pickle.load(open("data/index%d.pkl" % (shardIx), "r"))
-            inverted_path = os.path.join(os.getcwd(),"assignment5/i_df_jobs/%d.out"  % (shardIx))
+            inverted_path = os.path.join(os.getcwd(),"../assignment5/i_df_jobs/%d.out"  % (shardIx))
             logging.info("Inverted file path: %s" % inverted_path)
             data = pickle.load(open(inverted_path ,'r'))
-            idf_path = os.path.join(os.getcwd(), "assignment5/idf_jobs/0.out")
+            idf_path = os.path.join(os.getcwd(), "../assignment5/idf_jobs/0.out")
             logIDF = pickle.load(open(idf_path,'r'))
             app = httpserver.HTTPServer(web.Application([(r"/index", index.Index, dict(data=data, logIDF=logIDF))]))
             logging.info("Index shard %d listening on %d" % (shardIx, port))
         else:
             shardIx = taskID - inventory.NUM_INDEX_SHARDS - 1
             #data = pickle.load(open("data/doc%d.pkl" % (shardIx), "r"))
-            doc_path = os.path.join(os.getcwd(),"assignment5/df_jobs/%d.out" % (shardIx))
+            doc_path = os.path.join(os.getcwd(),"../assignment5/df_jobs/%d.out" % (shardIx))
             logging.info("Doc Server path %s" % doc_path)
             data = pickle.load(open(doc_path, "r"))
             app = httpserver.HTTPServer(web.Application([(r"/doc", doc.Doc, dict(data=data))]))
