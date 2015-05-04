@@ -70,15 +70,19 @@ myApp.service('fileUpload', ['$http', '$q', function ($http, $q) {
     return {
         getSearchResult : function(query, tag){
             var deferred = $q.defer();
-            var getUrl = '/search';
-            var promise = $http.get(getUrl, {
-                'q' : query,
-                'tag' : tag
-            }).success(function(response){
+            var getUrl = '/search?q=' + query;
+            if(tag){
+		getUrl += '&tag=' + tag
+            }
+	    console.log("In SearchService getURL:" + getUrl);
+            var promise = $http.get(getUrl)
+	    .success(function(response){
+		//console.log(response);
                 deferred.resolve(response);
             }).error(function(){
                 console.warn('Send to /search error');
             });
+		return deferred.promise;
         }
     }
 }])
@@ -110,9 +114,13 @@ myApp.controller('uploadCtrl', ['$scope', 'fileUpload', function($scope, fileUpl
     $scope.formData = {};
     $scope.all_tags = getTags;
     $scope.search = function() {
+	   query = $scope.formData.query;
+	   tag = $scope.formData.search_tag;
 	   console.log($scope.formData.search_tag); 
-	   console.log($scope.formData.query);    
-       SearchService.getSearchResult($scope.formData.search_tag, $scope.formData.query).then(function(data){
+	
+	   console.log($scope.formData.query); 
+		console.log(SearchService);   
+       SearchService.getSearchResult(query, tag).then(function(data){
         $scope.searchResult = data;
         console.log(data)
        }, function(data){
