@@ -65,7 +65,24 @@ myApp.service('fileUpload', ['$http', '$q', function ($http, $q) {
             return deferred.promise;
         }
     }
-}]);
+}])
+.service('SearchService', ['$http', '$q', function($http, $q){
+    return {
+        getSearchResult : function(query, tag){
+            var deferred = $q.defer();
+            var getUrl = '/search';
+            var promise = $http.get(getUrl, {
+                'q' : query,
+                'tag' : tag
+            }).success(function(response){
+                deferred.resolve(response);
+            }).error(function(){
+                console.warn('Send to /search error');
+            });
+        }
+    }
+}])
+;
 
 myApp.controller('uploadCtrl', ['$scope', 'fileUpload', function($scope, fileUpload){
 
@@ -89,11 +106,18 @@ myApp.controller('uploadCtrl', ['$scope', 'fileUpload', function($scope, fileUpl
         });    
     };    
 }])
-.controller('mainController', function ($scope, getTags) {
+.controller('mainController', function ($scope, getTags, SearchService) {
     $scope.formData = {};
     $scope.all_tags = getTags;
     $scope.search = function() {
-	console.log($scope.formData.search_tag); 
-	console.log($scope.formData.query);       
+	   console.log($scope.formData.search_tag); 
+	   console.log($scope.formData.query);    
+       SearchService.getSearchResult($scope.formData.search_tag, $scope.formData.query).then(function(data){
+        $scope.searchResult = data;
+        console.log(data)
+       }, function(data){
+         console.log("Get Search Result error")
+       })
+
     };    
 });

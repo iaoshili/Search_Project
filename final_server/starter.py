@@ -19,6 +19,7 @@ NUM_RESULTS = 10
 _UPLOADS = "./uploads/"
 SETTINGS = {"static_path": "./webapp"}
 REMOVE_PUNCT_MAP = dict((ord(char), None) for char in "0123456789=[]\\\"\'")
+docTagList = {}
 
 class HashPartitioner:
     def __init__(self, numReducers):
@@ -76,6 +77,7 @@ class Web(web.RequestHandler):
     @gen.coroutine
     def get(self):
         q = self.get_argument('q', None)
+        tag = self.get_argument('tag', None)
         if q is None:
             return
 
@@ -93,6 +95,16 @@ class Web(web.RequestHandler):
         serverToDocIDs = defaultdict(list)
         docIDToResultIx = {}
         partition = HashPartitioner(inventory.NUM_DOC_SHARDS)
+        final_postings = postings
+        if tag is not None:
+            postings = []
+            for doc in final_postings:
+                docID_str = unicode(doc[0])
+                tags = docTagList[docID_str]
+                if tag in tags:
+                    postings.append(doc)
+        else:
+            postings = final_postings
         for i in range(len(postings[:NUM_RESULTS])):
             docID = postings[i][0]
             docIDToResultIx[docID] = i
@@ -177,4 +189,5 @@ def main():
 
 if __name__ == "__main__":
     logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s', level=logging.DEBUG)
+    docTagList = json.load(open('docTagList.json', 'r'))
     main()
