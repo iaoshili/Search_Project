@@ -19,7 +19,7 @@ class Index(web.RequestHandler):
 	def initialize(self, data, logIDF):
 		self._postingsLists = data
 		self._logIDF = logIDF
-		logging.warn(self._postingsLists)
+		#logging.warn(self._postingsLists)
 
 	def head(self):
 		self.finish()
