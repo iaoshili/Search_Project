@@ -17,7 +17,12 @@ var myApp = angular.module('myApp', ['flow','ngRoute','ui.bootstrap', 'ngSanitiz
         }).
         when('/oriSearch', {
             controller: 'mainController',
-            templateUrl: 'partials/oriSearch.html'
+            templateUrl: 'partials/oriSearch.html',
+            resolve:{
+                tags : function(tagService){
+                    return tagService.getTags();
+                }
+            }
         }).
         otherwise({
             redirectTo: '/'
@@ -60,6 +65,15 @@ myApp.service('fileUpload', ['$http', '$q', function ($http, $q) {
     }
 }]);
 
+myApp.factory('tagService', function($q){
+    return {
+        getTags : function(){
+            data = {"tags": ["google", "apple", "culture", "design", "home", "politics", "web", "entertainment", "apps", "movie-reviews", "national-security", "policy", "gaming", "transportation", "business", "photography", "us-world", "mobile", "science", "typography", "tech", "architecture", "concepts", "microsoft"]};
+            return $q.when(data['tags'])
+        }
+    };
+});
+
 myApp.controller('uploadCtrl', ['$scope', 'fileUpload', function($scope, fileUpload){
 
     $scope.$on('flow::filesSubmitted', function (event, $flow, flowFile) {
@@ -82,9 +96,9 @@ myApp.controller('uploadCtrl', ['$scope', 'fileUpload', function($scope, fileUpl
         });    
     };    
 }])
-.controller('mainController', function ($scope, $http) {
+.controller('mainController', function ($scope, $http, tags) {
     $scope.formData = {};
-
+    $scope.all_tags = tags;
     $scope.search = function() {
         
     };    
