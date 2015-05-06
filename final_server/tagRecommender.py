@@ -74,9 +74,9 @@ def additionalTags(text):
 
 
 #Demo
-f = codecs.open("testFile", encoding='utf-8')
-content = f.read()
-f.close()
-print keywords(content)
-print coreTags(content)
-print additionalTags(content)
+# f = codecs.open("testFile", encoding='utf-8')
+# content = f.read()
+# f.close()
+# print keywords(content)
+# print coreTags(content)
+# print additionalTags(content)
