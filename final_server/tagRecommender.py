@@ -57,7 +57,10 @@ def additionalTags(text):
 	keywords = rake.extract(text, incl_scores=True)
 	similarWordDict = {}
 	tagsInArticles = set()
+
 	for keyword,score in keywords:
+		if len(keyword.split()) > 1:
+			continue
 		tagsInArticles.add(keyword)
 		similarWords = lemmalist(keyword)
 		if len(similarWords) != 0:
