@@ -14,12 +14,15 @@ import urllib
 from itertools import chain
 from collections import *
 import hashlib
+import nltk
+from nltk.corpus import stopwords
 
 NUM_RESULTS = 10
 _UPLOADS = "./uploads/"
 SETTINGS = {"static_path": "./webapp"}
 REMOVE_PUNCT_MAP = dict((ord(char), None) for char in "0123456789=[]\\\"\'")
 docTagList = {}
+stop = stopwords.words('english')
 
 class HashPartitioner:
     def __init__(self, numReducers):
@@ -56,19 +59,29 @@ class UploadHandler(web.RequestHandler):
                 for t in temp:
                     clean_tags.add(t)
         clean_tags = list(clean_tags)
+        word_feature = self.word_feature(textBody).most_common(10)
         tags = SampleClassifier.classifyDocument(textBody)
         response = {
             "status" : "OK",
-            "file_name" : cname,
-            "folder" : _UPLOADS,
-            "classify_tags" : ",".join(tags),
-            "origianl_tags" : ",".join(clean_tags)
+            "file_content" : textBody[:200],
+            "word_feature" : word_feature,
+            #"file_name" : cname,
+            "file_name": fname,
+            #"folder" : _UPLOADS,
+            "classify_tags" : ",".join(tags)
+            #"origianl_tags" : ",".join(clean_tags)
         }
         self.finish(json.dumps(response))
 
     def loadVergeText(self, content):
         cons = json.loads(content)
         return cons['Main text'], cons['Tags'] 
+
+    def wordFeatures(self, content):
+        noPunctChunk = content.translate(REMOVE_PUNCT_MAP)
+        termList = nltk.word_tokenize(noPunctChunk)
+        termList = [word.lower() for word in termList if word.lower() not in stop]
+        return Counter(termList)
 
 class Web(web.RequestHandler):
     def head(self):
