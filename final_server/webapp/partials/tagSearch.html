@@ -19,10 +19,6 @@
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-3 col-sm-8 col-sm-offset-2 text-center">    
                 <table class="table table-striped">        
                     <tr>
-                        <td>Key Words: </td>
-                        <td><div ng-repeat="keyword in data.keyword">{{keyword}}</div></td>
-                    </tr>  
-                    <tr>
                         <td>Category: </td>
                         <td>{{data.category}}</td>
                     </tr>
@@ -35,6 +31,10 @@
 			<td>Additional Tags:</td>
 			<td><div ng-repeat="tag in data.additional_tags">{{tag[0]}} {{tag[1]}}</div></td>
 		    <tr>
+                    <tr>
+                        <td>Key Words: </td>
+                        <td><div ng-repeat="keyword in data.keyword">{{keyword}}</div></td>
+                    </tr>  
 			<td>Snippet:</td>
 			<td>{{data.file_content}}</td>
                 </table>
