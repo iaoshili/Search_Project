@@ -105,7 +105,8 @@ myApp.controller('uploadCtrl', ['$scope', 'fileUpload', function($scope, fileUpl
         var file = $scope.myFile;
         var uploadUrl = "/upload";
         fileUpload.uploadFileToUrl(file, uploadUrl).then(function(data){
-            $scope.data = data;
+            	console.log(data);
+    		$scope.data = data;
         }, function(data){
             console.log("Upload file call back failed")
         });    

@@ -16,6 +16,8 @@ from collections import *
 import hashlib
 import nltk
 from nltk.corpus import stopwords
+from nltk.tokenize import RegexpTokenizer
+import tagRecommender
 
 NUM_RESULTS = 10
 _UPLOADS = "./uploads/"
@@ -59,15 +61,13 @@ class UploadHandler(web.RequestHandler):
                 for t in temp:
                     clean_tags.add(t)
         clean_tags = list(clean_tags)
-        word_feature = self.word_feature(textBody).most_common(10)
+        
         tags = SampleClassifier.classifyDocument(textBody)
         response = {
             "status" : "OK",
             "file_content" : textBody[:200],
             "word_feature" : word_feature,
             #"file_name" : cname,
-            "file_name": fname,
-            #"folder" : _UPLOADS,
             "classify_tags" : ",".join(tags)
             #"origianl_tags" : ",".join(clean_tags)
         }
@@ -77,11 +77,6 @@ class UploadHandler(web.RequestHandler):
         cons = json.loads(content)
         return cons['Main text'], cons['Tags'] 
 
-    def wordFeatures(self, content):
-        noPunctChunk = content.translate(REMOVE_PUNCT_MAP)
-        termList = nltk.word_tokenize(noPunctChunk)
-        termList = [word.lower() for word in termList if word.lower() not in stop]
-        return Counter(termList)
 
 class Web(web.RequestHandler):
     def head(self):
@@ -157,12 +152,6 @@ class IndexDotHTMLAwareStaticFileHandler(web.StaticFileHandler):
         if not url_path or url_path.endswith('/'):
             url_path += 'index.html'
         return super(IndexDotHTMLAwareStaticFileHandler, self).parse_url_path(url_path)
-
-# def makeBackend():
-#     return web.Application([
-#          (r"/upload", UploadHandler),
-#          (r"/(.*)", IndexDotHTMLAwareStaticFileHandler, dict(path=SETTINGS['static_path']))
-#          ],**SETTINGS)
 
 # def main():
 #     app = httpserver.HTTPServer(makeBackend())
