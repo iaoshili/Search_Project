@@ -4,7 +4,8 @@
         </div>
         <div id="textDiv" class="row">
             <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 text-center">    
-            Upload a file:   
+            <!--<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-3 col-sm-8 col-sm-offset-2 text-center">-->    
+            <p class="lead">Upload a file:</p>   
                 <div class="input-group">
                     <input type="file" style="display: inline" file-model="myFile"/>
                     <button type="button" class="btn btn-primary" ng-click="uploadFile()">Upload</button><br/>
@@ -18,18 +19,21 @@
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-3 col-sm-8 col-sm-offset-2 text-center">    
                 <table class="table table-striped">        
                     <tr>
-                        <td>upload_file_name: </td>
-                        <td>{{data.file_name}}</td>
+                        <td>Key Words: </td>
+                        <td>{{data.keyWords}}</td>
                     </tr>  
                     <tr>
-                        <td>classify_tag: </td>
-                        <td>{{data.classify_tags}}</td>
+                        <td>Category: </td>
+                        <td>{{data.category}}</td>
                     </tr>
 			
                     <tr>
-                        <td>Frequent Words:</td>
-                        <td><div ng-repeat="ele in data.word_feature">{{ele}}</div></td>
+                        <td>Core Tags:</td>
+                        <td><div ng-repeat="tag in data.core_tags">{{tag}}</div></td>
                     </tr>
+	 	    <tr>
+			<td>Additional Tags:</td>
+			<td><div ng-repeat="tag in data.additional_tags">{{tag}}</div></td>
 		    <tr>
 			<td>Snippet:</td>
 			<td>{{data.file_content}}</td>

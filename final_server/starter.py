@@ -61,15 +61,18 @@ class UploadHandler(web.RequestHandler):
                 for t in temp:
                     clean_tags.add(t)
         clean_tags = list(clean_tags)
-        
-        tags = SampleClassifier.classifyDocument(textBody)
+        keyWords = "hello"
+        core_tags = [["1",1],["2",2],["3",3],["4",4],["5",5]]
+        additional_tags = [["1",1],["2",2],["3",3],["4",4],["5",5]]
+        category = SampleClassifier.classifyDocument(textBody)
         response = {
             "status" : "OK",
             "file_content" : textBody[:200],
-            "word_feature" : word_feature,
+            "keyword" : keyWords,
             #"file_name" : cname,
-            "classify_tags" : ",".join(tags)
-            #"origianl_tags" : ",".join(clean_tags)
+            "category" : ",".join(category),
+            "core_tags" : core_tags,
+            "additional_tags" : additional_tags            
         }
         self.finish(json.dumps(response))
 
