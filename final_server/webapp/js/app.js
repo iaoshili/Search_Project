@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp', ['flow','ngRoute','ui.bootstrap', 'ngSanitize']).config(['flowFactoryProvider', function (flowFactoryProvider) {
+var myApp = angular.module('myApp', ['flow','ngRoute','ui.bootstrap', 'ngSanitize', 'blockUI']).config(['flowFactoryProvider', function (flowFactoryProvider) {
   flowFactoryProvider.defaults = {
     target: '/upload',
     permanentErrors: [404, 500, 501],
@@ -88,7 +88,7 @@ myApp.service('fileUpload', ['$http', '$q', function ($http, $q) {
 }])
 ;
 
-myApp.controller('uploadCtrl', ['$scope', 'fileUpload', function($scope, fileUpload){
+myApp.controller('uploadCtrl', ['$scope', 'fileUpload', 'blockUI', function($scope, fileUpload, blockUI){
 
     $scope.$on('flow::filesSubmitted', function (event, $flow, flowFile) {
         var file = flowFile[0]['file']
@@ -105,7 +105,8 @@ myApp.controller('uploadCtrl', ['$scope', 'fileUpload', function($scope, fileUpl
         var file = $scope.myFile;
         var uploadUrl = "/upload";
         fileUpload.uploadFileToUrl(file, uploadUrl).then(function(data){
-            	console.log(data);
+            console.log(data);
+            inform.add('Data received from server');
     		$scope.data = data;
         }, function(data){
             console.log("Upload file call back failed")
