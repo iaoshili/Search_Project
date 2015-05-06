@@ -20,7 +20,7 @@
                 <table class="table table-striped">        
                     <tr>
                         <td>Key Words: </td>
-                        <td>{{data.keyWords}}</td>
+                        <td><div ng-repeat="keyword in data.keyword">{{keyword}}</div></td>
                     </tr>  
                     <tr>
                         <td>Category: </td>
@@ -29,11 +29,11 @@
 			
                     <tr>
                         <td>Core Tags:</td>
-                        <td><div ng-repeat="tag in data.core_tags">{{tag}}</div></td>
+                        <td><div ng-repeat="tag in data.core_tags">{{tag[0]}} {{ tag[1] }}  </div></td>
                     </tr>
 	 	    <tr>
 			<td>Additional Tags:</td>
-			<td><div ng-repeat="tag in data.additional_tags">{{tag}}</div></td>
+			<td><div ng-repeat="tag in data.additional_tags">{{tag[0]}} {{tag[1]}}</div></td>
 		    <tr>
 			<td>Snippet:</td>
 			<td>{{data.file_content}}</td>

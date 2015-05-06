@@ -61,14 +61,15 @@ class UploadHandler(web.RequestHandler):
                 for t in temp:
                     clean_tags.add(t)
         clean_tags = list(clean_tags)
-        keyWords = "hello"
-        core_tags = [["1",1],["2",2],["3",3],["4",4],["5",5]]
-        additional_tags = [["1",1],["2",2],["3",3],["4",4],["5",5]]
+        keyWords = tagRecommender.keywords(textBody)
+        #logging.info(keyWords)
+        core_tags = tagRecommender.coreTags(textBody)[:5]
+        additional_tags = tagRecommender.additionalTags(textBody)[:5]
         category = SampleClassifier.classifyDocument(textBody)
         response = {
             "status" : "OK",
             "file_content" : textBody[:200],
-            "keyword" : keyWords,
+            "keyword" : keyWords[:10],
             #"file_name" : cname,
             "category" : ",".join(category),
             "core_tags" : core_tags,
